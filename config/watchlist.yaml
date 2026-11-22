@@ -1,0 +1,49 @@
+# Watchlist — dossiers to track over time.
+#   name:      label shown in the report ("Tracked items" section)
+#   keywords:  regex; any collected item matching it is flagged and prioritised
+#   url:       (optional) a page to monitor; any change in its text is reported
+#   note:      (optional) context added to the change notice
+#
+# Add, remove or edit entries freely. Keep regexes specific to avoid false matches.
+
+items:
+  - name: "ICH M14 — pharmacoepidemiological safety studies using RWD"
+    keywords: '\bICH\b.{0,40}\bM14\b|\bM14\b.{0,60}(pharmacoepidemiolog|real[- ]world)'
+
+  - name: "ICH E6(R3) — Good Clinical Practice (incl. Annex 2)"
+    keywords: 'E6\s*\(R3\)|E6R3|good clinical practice.{0,40}annex\s*2'
+
+  - name: "ICH E20 — adaptive designs"
+    keywords: '\bICH\b.{0,40}\bE20\b|\bE20\b.{0,40}adaptive'
+
+  - name: "ICH work on real-world evidence"
+    keywords: '\bICH\b.{0,80}real[- ]world|real[- ]world.{0,80}\bICH\b'
+
+  - name: "EMA reflection papers / guidance on RWD and RWE"
+    keywords: '(EMA|European Medicines Agency).{0,100}(reflection paper|guideline|guidance).{0,80}(real[- ]world|non[- ]interventional|registr)'
+
+  - name: "DARWIN EU studies and network"
+    keywords: 'DARWIN EU'
+
+  - name: "FDA guidance on RWD/RWE"
+    keywords: '(FDA|Food and Drug Administration).{0,120}(real[- ]world|externally controlled|non[- ]interventional|registr)'
+
+  - name: "European Health Data Space (EHDS) — implementing acts"
+    keywords: 'European Health Data Space|\bEHDS\b'
+
+  - name: "EU pharmaceutical legislation reform"
+    keywords: 'pharmaceutical (package|legislation|reform)|pharma package'
+
+  - name: "EU HTA Regulation — joint clinical assessments"
+    keywords: 'joint clinical assessment|\bJCA\b|HTA Regulation|HTA Coordination Group'
+
+  - name: "AI Act — medical/health AI"
+    keywords: 'AI Act.{0,100}(medical|health|device)|(medical|health).{0,100}AI Act'
+
+  - name: "NICE real-world evidence framework"
+    keywords: 'NICE.{0,80}real[- ]world'
+
+  # Example of page monitoring (uncomment and adapt):
+  # - name: "FDA Real-World Evidence page"
+  #   url: "https://www.fda.gov/science-research/science-and-research-special-topics/real-world-evidence"
+  #   note: "Check for new or revised guidance listed on the page."

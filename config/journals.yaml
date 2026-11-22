@@ -1,0 +1,43 @@
+# Crossref "online first" feeds for key journals (articles appear here days or weeks
+# before PubMed indexing). Each group is one source in the coverage table.
+#   match: regex an article title/abstract must match to be kept (group default;
+#          a journal can override it with its own "match").
+
+groups:
+  - id: crossref_methods
+    name: "Key journals — RWE, pharmacoepi & methods (online first)"
+    region: Publications
+    tier: 1
+    match: 'real[- ]world|observational|target trial|emulat|external control|synthetic control|causal|bias|confound|registr|pharmacoepidemiolog|regulat|health technology assessment|\bHTA\b|guidance|framework|estimand|transportab|generaliz|fit[- ]for[- ]purpose|data quality|validation|machine learning|artificial intelligence|pragmatic|electronic health record|claims'
+    journals:
+      - {name: "Pharmacoepidemiology and Drug Safety", issn: "1099-1557"}
+      - {name: "Clinical Pharmacology & Therapeutics", issn: "1532-6535"}
+      - {name: "Value in Health", issn: "1098-3015"}
+      - {name: "Journal of Clinical Epidemiology", issn: "0895-4356"}
+      - {name: "American Journal of Epidemiology", issn: "1476-6256"}
+      - {name: "Epidemiology", issn: "1044-3983"}
+      - {name: "European Journal of Epidemiology", issn: "1573-7284"}
+      - {name: "International Journal of Epidemiology", issn: "1464-3685"}
+      - {name: "Statistics in Medicine", issn: "1097-0258"}
+      - {name: "Drug Safety", issn: "1179-1942"}
+      - {name: "Therapeutic Innovation & Regulatory Science", issn: "2168-4804"}
+      - {name: "Clinical Trials", issn: "1740-7753"}
+      - {name: "Journal of Comparative Effectiveness Research", issn: "2042-6313"}
+      - {name: "BMC Medical Research Methodology", issn: "1471-2288"}
+      - {name: "Research Synthesis Methods", issn: "1759-2887"}
+      - {name: "International Journal of Technology Assessment in Health Care", issn: "1471-6348"}
+
+  - id: crossref_general
+    name: "Major general & digital-health journals (online first, filtered)"
+    region: Publications
+    tier: 1
+    match: 'real[- ]world (evidence|data)|target trial|external control|synthetic control arm|regulatory (science|decision|approval|agenc)|health technology assessment|\bFDA\b|\bEMA\b|European Medicines Agency|post[- ]marketing|post[- ]authori[sz]ation|AI (model|system)s? .*(evaluation|validation|regulat)|algorithm.*(validation|regulat|monitoring)'
+    journals:
+      - {name: "BMJ", issn: "1756-1833"}
+      - {name: "JAMA Network Open", issn: "2574-3805"}
+      - {name: "JAMA", issn: "1538-3598"}
+      - {name: "The Lancet Digital Health", issn: "2589-7500"}
+      - {name: "NEJM AI", issn: "2836-9386"}
+      - {name: "npj Digital Medicine", issn: "2398-6352"}
+      - {name: "Nature Medicine", issn: "1546-170X"}
+      - {name: "Nature Reviews Drug Discovery", issn: "1474-1784"}

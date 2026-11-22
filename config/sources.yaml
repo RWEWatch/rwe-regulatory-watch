@@ -1,0 +1,230 @@
+# Monitored sources
+# ------------------------------------------------------------------
+# Fields:
+#   id        unique identifier (used by the "already seen" memory)
+#   name      display name
+#   region    International | Europe | Americas | Asia-Pacific | Africa & Middle East | Publications
+#   tier      1 = major agency (checked systematically), 2 = wider coverage / smaller agencies
+#   type      rss | page | federal_register | pubmed | europepmc | arxiv | clinicaltrials | gnews
+#   url       RSS/Atom feed or "news" page (rss, page types)
+#   include   (page) regex that item links must match
+#   filter    keywords (default) = relevance filter; none = keep everything
+#   query     (gnews, pubmed) query
+#   hl / gl   (gnews) Google News language / country edition
+#   timeout   (optional) seconds, for slow sites
+#   fallback  (optional) false = no Google News fallback if the site is unreachable
+#
+#   match     (optional) source-specific relevance regex (replaces the global keywords)
+#
+# Crossref journal feeds are defined in config/journals.yaml.
+#
+# "page" type: the page is re-read every week; any link not seen the week before
+# is new. On its first run the source is "initialised" (nothing reported).
+#
+# "rss" and "page" sources that block the script (403/404/timeout) automatically
+# fall back to Google News for their domain (site:domain), flagged as press.
+#
+# "gnews" type: press signal (secondary source). The report asks to trace the
+# primary source. Useful for agencies without a usable feed.
+# ------------------------------------------------------------------
+
+sources:
+
+  # ============================ INTERNATIONAL ============================
+  - {id: who, name: "WHO", region: International, tier: 1, type: rss,
+     url: "https://www.who.int/rss-feeds/news-english.xml"}
+  - {id: ich, name: "ICH", region: International, tier: 1, type: page,
+     url: "https://www.ich.org/page/whats-new", include: "ich\\.org/(news|page|meeting)", filter: none}
+  - {id: icmra, name: "ICMRA", region: International, tier: 1, type: page,
+     url: "https://www.icmra.info/drupal/en/news", include: "icmra\\.info/drupal/(en/)?(news|strategicinitiatives|covid)", filter: none}
+  - {id: cioms, name: "CIOMS", region: International, tier: 1, type: page,
+     url: "https://cioms.ch/news/", include: "cioms\\.ch/", filter: none}
+  - {id: imdrf, name: "IMDRF (devices / SaMD)", region: International, tier: 2, type: page,
+     url: "https://www.imdrf.org/documents", include: "imdrf\\.org/(documents|consultations)", timeout: 75}
+  - {id: oecd_health, name: "OECD health (press)", region: International, tier: 2, type: gnews,
+     query: 'OECD ("health data" OR "real-world" OR "health technology assessment")'}
+
+  # =============================== EUROPE ================================
+  - {id: ema, name: "EMA — What's new", region: Europe, tier: 1, type: page,
+     url: "https://www.ema.europa.eu/en/news-events/whats-new",
+     include: "ema\\.europa\\.eu/en/(documents|news|events|human-regulatory-overview|about-us)"}
+  - {id: ema_rwd, name: "EMA — Real-world evidence topic page", region: Europe, tier: 1, type: page,
+     url: "https://www.ema.europa.eu/en/about-us/how-we-work/big-data/real-world-evidence",
+     include: "ema\\.europa\\.eu/en/", filter: none}
+  - {id: darwin_eu, name: "DARWIN EU", region: Europe, tier: 1, type: page,
+     url: "https://www.darwin-eu.org/", include: "darwin-eu\\.org/", timeout: 60, filter: none}
+  - {id: hma, name: "HMA (Heads of Medicines Agencies)", region: Europe, tier: 1, type: page,
+     url: "https://www.hma.eu/", include: "hma\\.eu/"}
+  - {id: ec_health, name: "European Commission — Health (incl. EHDS, HTA)", region: Europe, tier: 1, type: page,
+     url: "https://health.ec.europa.eu/latest-updates_en", include: "health\\.ec\\.europa\\.eu/"}
+  - {id: eu_hta, name: "EU HTA / JCA (press)", region: Europe, tier: 1, type: gnews,
+     query: '"joint clinical assessment" OR "HTA regulation" OR "HTA Coordination Group"'}
+  - {id: mhra, name: "MHRA", region: Europe, tier: 1, type: rss,
+     url: "https://www.gov.uk/search/all.atom?organisations%5B%5D=medicines-and-healthcare-products-regulatory-agency&order=updated-newest"}
+  - {id: nice, name: "NICE", region: Europe, tier: 1, type: page,
+     url: "https://www.nice.org.uk/news", include: "nice\\.org\\.uk/news/"}
+  - {id: has, name: "HAS (France)", region: Europe, tier: 1, type: page,
+     url: "https://www.has-sante.fr/jcms/fc_2875171/fr/actualites", include: "has-sante\\.fr/jcms/"}
+  - {id: ansm, name: "ANSM (France)", region: Europe, tier: 1, type: page,
+     url: "https://ansm.sante.fr/actualites", include: "ansm\\.sante\\.fr/(actualites|informations-de-securite|evenements)/"}
+  - {id: hdh, name: "Health Data Hub (France)", region: Europe, tier: 2, type: page,
+     url: "https://www.health-data-hub.fr/actualites", include: "health-data-hub\\.fr/", filter: none}
+  - {id: iqwig, name: "IQWiG (Germany)", region: Europe, tier: 1, type: page,
+     url: "https://www.iqwig.de/presse/pressemitteilungen/", include: "iqwig\\.de/(presse|projekte|methoden)", filter: none}
+  - {id: gba, name: "G-BA (Germany)", region: Europe, tier: 1, type: page,
+     url: "https://www.g-ba.de/presse/pressemitteilungen-meldungen/", include: "g-ba\\.de/(presse|beschluesse)"}
+  - {id: bfarm, name: "BfArM (Germany)", region: Europe, tier: 1, type: page,
+     url: "https://www.bfarm.de/DE/Aktuelles/_node.html", include: "bfarm\\.de/(SharedDocs|DE/Aktuelles)"}
+  - {id: swissmedic, name: "Swissmedic", region: Europe, tier: 1, type: page,
+     url: "https://www.swissmedic.ch/swissmedic/en/home/news.html", include: "swissmedic\\.ch/swissmedic/en/home/"}
+  - {id: aifa, name: "AIFA (Italy)", region: Europe, tier: 2, type: page,
+     url: "https://www.aifa.gov.it/en/home", include: "aifa\\.gov\\.it/en/-/"}
+  - {id: aemps, name: "AEMPS (Spain)", region: Europe, tier: 2, type: page,
+     url: "https://www.aemps.gob.es/informa/", include: "aemps\\.gob\\.es/"}
+  - {id: zin, name: "Zorginstituut Nederland", region: Europe, tier: 2, type: page,
+     url: "https://english.zorginstituutnederland.nl/latest", include: "zorginstituutnederland\\.nl/"}
+  - {id: cbg, name: "CBG-MEB (Netherlands)", region: Europe, tier: 2, type: page,
+     url: "https://english.cbg-meb.nl/latest", include: "cbg-meb\\.nl/"}
+  - {id: nordics, name: "Nordic agencies (press)", region: Europe, tier: 2, type: gnews,
+     query: '(Läkemedelsverket OR Lægemiddelstyrelsen OR Fimea OR DMP OR TLV) ("real-world" OR "registry" OR guidance)'}
+  - {id: eu_smaller, name: "Other EU agencies (press)", region: Europe, tier: 2, type: gnews,
+     query: '(HPRA OR Infarmed OR FAMHP OR "AGES Medizinmarktaufsicht" OR SÚKL OR URPL) ("real-world" OR "real world data" OR guidance OR registry)'}
+
+  # ============================== AMERICAS ==============================
+  - {id: fda_fr, name: "FDA — Federal Register (guidances, notices)", region: Americas, tier: 1, type: federal_register,
+     agencies: ["food-and-drug-administration"], filter: none}
+  - {id: cms_fr, name: "CMS — Federal Register", region: Americas, tier: 2, type: federal_register,
+     agencies: ["centers-for-medicare-medicaid-services"]}
+  - {id: fda_press, name: "FDA — press releases", region: Americas, tier: 1, type: rss,
+     url: "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml"}
+  - {id: fda_rwe, name: "FDA — Real-World Evidence page", region: Americas, tier: 1, type: page,
+     url: "https://www.fda.gov/science-research/science-and-research-special-topics/real-world-evidence",
+     include: "fda\\.gov/", filter: none}
+  - {id: health_canada, name: "Health Canada", region: Americas, tier: 1, type: gnews,
+     query: 'site:canada.ca "Health Canada" (guidance OR "real-world" OR consultation OR "notice")', hl: en-CA, gl: CA}
+  - {id: cda_amc, name: "CDA-AMC (ex-CADTH)", region: Americas, tier: 1, type: page,
+     url: "https://www.cda-amc.ca/news", include: "cda-amc\\.ca/"}
+  - {id: anvisa, name: "ANVISA (Brazil)", region: Americas, tier: 1, type: gnews,
+     query: 'Anvisa ("mundo real" OR "evidência" OR "guia" OR "consulta pública" OR "inteligência artificial")', hl: pt-BR, gl: BR}
+  - {id: cofepris, name: "COFEPRIS (Mexico)", region: Americas, tier: 2, type: gnews,
+     query: 'COFEPRIS (regulación OR "datos" OR "evidencia" OR guía OR reconocimiento)', hl: es-419, gl: MX}
+  - {id: latam_smaller, name: "Latin American agencies (press)", region: Americas, tier: 2, type: gnews,
+     query: '(ANMAT OR INVIMA OR "ISP Chile" OR DIGEMID OR "evidencia del mundo real") (medicamentos OR regulación)', hl: es-419, gl: AR}
+  - {id: paho, name: "PAHO", region: Americas, tier: 2, type: gnews,
+     query: 'PAHO (regulatory OR "health data" OR "health technology assessment")'}
+  - {id: icer, name: "ICER", region: Americas, tier: 2, type: gnews,
+     query: '"Institute for Clinical and Economic Review"'}
+  - {id: us_rwe_ecosys, name: "US RWE ecosystem (Duke-Margolis, Reagan-Udall, PCORI)", region: Americas, tier: 2, type: gnews,
+     query: '("Duke-Margolis" OR "Reagan-Udall" OR PCORI) ("real-world" OR evidence)'}
+
+  # =========================== ASIA-PACIFIC ============================
+  - {id: pmda, name: "PMDA (Japan, English)", region: Asia-Pacific, tier: 1, type: page,
+     url: "https://www.pmda.go.jp/english/index.html", include: "pmda\\.go\\.jp/english/", filter: none}
+  - {id: pmda_jp, name: "PMDA (Japan, Japanese)", region: Asia-Pacific, tier: 1, type: page,
+     url: "https://www.pmda.go.jp/0017.html", include: "pmda\\.go\\.jp/"}
+  - {id: nmpa, name: "NMPA (China)", region: Asia-Pacific, tier: 1, type: page,
+     url: "https://english.nmpa.gov.cn/news.html", include: "english\\.nmpa\\.gov\\.cn/20\\d\\d-"}
+  - {id: cde_cn, name: "CDE (China, press)", region: Asia-Pacific, tier: 1, type: gnews,
+     query: '药审中心 (真实世界 OR 指导原则)', hl: zh-CN, gl: CN}
+  - {id: mfds, name: "MFDS (Korea, press)", region: Asia-Pacific, tier: 1, type: gnews,
+     query: '식약처 (실사용 OR 리얼월드 OR 가이드라인)', hl: ko, gl: KR}
+  - {id: tga, name: "TGA (Australia)", region: Asia-Pacific, tier: 1, type: page,
+     url: "https://www.tga.gov.au/news/whats-new", include: "tga\\.gov\\.au/", timeout: 75}
+  - {id: pbac, name: "PBAC / Australian HTA (press)", region: Asia-Pacific, tier: 2, type: gnews,
+     query: '(PBAC OR "HTA Review" Australia) ("real-world" OR evidence)', hl: en-AU, gl: AU}
+  - {id: hsa, name: "HSA (Singapore)", region: Asia-Pacific, tier: 1, type: page,
+     url: "https://www.hsa.gov.sg/announcements", include: "hsa\\.gov\\.sg/announcements/"}
+  - {id: cdsco, name: "CDSCO (India, press)", region: Asia-Pacific, tier: 1, type: gnews,
+     query: 'CDSCO (guidance OR "real-world" OR rules OR "clinical trial")', hl: en-IN, gl: IN}
+  - {id: asia_smaller, name: "Other Asian agencies (press)", region: Asia-Pacific, tier: 2, type: gnews,
+     query: '("Taiwan FDA" OR "Thai FDA" OR NPRA OR BPOM OR "Philippine FDA" OR HITAP OR Medsafe) ("real-world" OR guidance OR reliance)'}
+  - {id: jp_rwd_press, name: "Japan RWD (press)", region: Asia-Pacific, tier: 2, type: gnews,
+     query: 'リアルワールドデータ (PMDA OR 厚生労働省 OR 承認)', hl: ja, gl: JP}
+
+  # ======================= AFRICA & MIDDLE EAST ========================
+  - {id: ama, name: "African Medicines Agency / AUDA-NEPAD (press)", region: "Africa & Middle East", tier: 1, type: gnews,
+     query: '"African Medicines Agency" OR "AMRH" OR "AVAREF"'}
+  - {id: sahpra, name: "SAHPRA (South Africa, press)", region: "Africa & Middle East", tier: 1, type: gnews,
+     query: 'SAHPRA', hl: en-ZA, gl: ZA}
+  - {id: sfda, name: "SFDA (Saudi Arabia, press)", region: "Africa & Middle East", tier: 1, type: gnews,
+     query: '"Saudi Food and Drug Authority" OR SFDA (guidance OR "real-world" OR regulation)'}
+  - {id: eda, name: "EDA (Egypt, press)", region: "Africa & Middle East", tier: 2, type: gnews,
+     query: '"Egyptian Drug Authority"'}
+  - {id: africa_smaller, name: "Other African agencies (press)", region: "Africa & Middle East", tier: 2, type: gnews,
+     query: '(NAFDAC OR "Pharmacy and Poisons Board" OR "Rwanda FDA" OR TMDA OR "Ghana FDA" OR ZAMRA OR AMMPS) (regulation OR guideline OR reliance OR "clinical trials")'}
+  - {id: maghreb, name: "Maghreb (press, FR)", region: "Africa & Middle East", tier: 2, type: gnews,
+     query: '(AMMPS OR "Agence marocaine du médicament" OR "Direction de la pharmacie et du médicament" OR "Agence nationale des produits pharmaceutiques") (médicament OR réglementation)', hl: fr, gl: MA}
+  - {id: gulf_israel, name: "Gulf & Israel (press)", region: "Africa & Middle East", tier: 2, type: gnews,
+     query: '("Emirates Drug Establishment" OR "Israel Ministry of Health" OR "Qatar MoPH") ("real-world" OR "health data" OR regulation)'}
+
+  # ============== EU LAW, REGISTRIES, HTA & CONSORTIA (direct) ==============
+  - {id: eurlex_leg, name: "EUR-Lex — Parliament & Council legislation", region: Europe, tier: 1, type: rss,
+     url: "https://eur-lex.europa.eu/EN/display-feed.rss?rssId=162",
+     match: 'medicinal|pharmac|health|medical device|clinical|artificial intelligence|data space|HTA|technology assessment'}
+  - {id: eurlex_prop, name: "EUR-Lex — Commission proposals", region: Europe, tier: 1, type: rss,
+     url: "https://eur-lex.europa.eu/EN/display-feed.rss?rssId=161",
+     match: 'medicinal|pharmac|health|medical device|clinical|artificial intelligence|data space|HTA|technology assessment'}
+  - {id: eurlex_ojl, name: "EUR-Lex — Official Journal L (acts)", region: Europe, tier: 1, type: rss,
+     url: "https://eur-lex.europa.eu/EN/display-feed.rss?rssId=165",
+     match: 'medicinal|pharmac|European Health Data Space|health data|medical device|artificial intelligence|technology assessment|clinical trial'}
+  - {id: ema_catalogues, name: "HMA-EMA RWD catalogues / EU PAS Register (what's new)", region: Europe, tier: 1, type: page,
+     url: "https://catalogues.ema.europa.eu/whats-new", include: "catalogues\\.ema\\.europa\\.eu/(node|study|data-source|catalogue)", filter: none}
+  - {id: ctgov, name: "ClinicalTrials.gov — registry-based / RWE-design studies", region: Publications, tier: 2, type: clinicaltrials,
+     query: '"registry-based" OR "registry based randomized" OR "target trial emulation" OR "external control arm" OR "synthetic control arm" OR "real-world evidence" OR "real world evidence"'}
+  - {id: smc, name: "Scottish Medicines Consortium", region: Europe, tier: 2, type: page,
+     url: "https://www.scottishmedicines.org.uk/about-us/latest-updates/", include: "scottishmedicines\\.org\\.uk/"}
+  - {id: ncpe, name: "NCPE (Ireland)", region: Europe, tier: 2, type: page,
+     url: "https://www.ncpe.ie/", include: "ncpe\\.ie/"}
+  - {id: inahta_htai, name: "INAHTA / HTAi (press)", region: International, tier: 2, type: gnews,
+     query: '(INAHTA OR HTAi OR "Health Technology Assessment international") (evidence OR "real-world" OR method)'}
+  - {id: icer_direct, name: "ICER — press releases", region: Americas, tier: 2, type: page,
+     url: "https://icer.org/news-insights/press-releases/", include: "icer\\.org/news-insights/"}
+  - {id: sentinel, name: "FDA Sentinel Initiative", region: Americas, tier: 1, type: page,
+     url: "https://www.sentinelinitiative.org/news-events", include: "sentinelinitiative\\.org/", filter: none}
+  - {id: duke_margolis, name: "Duke-Margolis Institute", region: Americas, tier: 2, type: page,
+     url: "https://healthpolicy.duke.edu/news", include: "healthpolicy\\.duke\\.edu/(news|publications|events)"}
+  - {id: reagan_udall, name: "Reagan-Udall Foundation", region: Americas, tier: 2, type: page,
+     url: "https://reaganudall.org/news-and-events", include: "reaganudall\\.org/"}
+  - {id: ohdsi_ehden, name: "OHDSI / EHDEN / TransCelerate / CTTI (press)", region: International, tier: 2, type: gnews,
+     query: '(OHDSI OR EHDEN OR TransCelerate OR CTTI OR "Clinical Trials Transformation Initiative") (data OR evidence OR trial)'}
+  - {id: ispor_ispe, name: "ISPOR / ISPE (press)", region: International, tier: 2, type: gnews,
+     query: '(ISPOR OR "International Society for Pharmacoepidemiology") ("real-world" OR guidance OR "good practices" OR framework)'}
+  - {id: mhlw, name: "MHLW (Japan, Japanese)", region: Asia-Pacific, tier: 1, type: page,
+     url: "https://www.mhlw.go.jp/stf/new-info/index.html", include: "mhlw\\.go\\.jp/"}
+  - {id: mfds_en, name: "MFDS (Korea, English site)", region: Asia-Pacific, tier: 1, type: page,
+     url: "https://www.mfds.go.kr/eng/brd/m_61/list.do", include: "mfds\\.go\\.kr/eng/"}
+  - {id: who_iris, name: "WHO IRIS — new publications", region: International, tier: 2, type: page,
+     url: "https://iris.who.int/discover?scope=%2F&query=&rpp=40&sort_by=dc.date.issued_dt&order=desc",
+     include: "iris\\.who\\.int/(handle|items|bitstream)"}
+  - {id: cioms_pubs, name: "CIOMS — publications", region: International, tier: 1, type: page,
+     url: "https://cioms.ch/publications/", include: "cioms\\.ch/publications/", filter: none}
+
+  # ===================== MULTILINGUAL THEMATIC WATCH ====================
+  - {id: rwe_global_en, name: "Regulatory RWE — global press (EN)", region: International, tier: 2, type: gnews,
+     query: '"real-world evidence" (regulator OR regulatory OR agency OR guidance OR approval)'}
+  - {id: rwe_fr, name: "RWE — French-language press", region: International, tier: 2, type: gnews,
+     query: '"données de vie réelle" OR "données en vie réelle"', hl: fr, gl: FR}
+  - {id: rwe_es, name: "RWE — Spanish-language press", region: International, tier: 2, type: gnews,
+     query: '"evidencia del mundo real" OR "datos del mundo real"', hl: es-419, gl: MX}
+  - {id: rwe_pt, name: "RWE — Portuguese-language press", region: International, tier: 2, type: gnews,
+     query: '"evidências do mundo real" OR "dados do mundo real"', hl: pt-BR, gl: BR}
+  - {id: rwe_zh, name: "RWE — Chinese-language press", region: International, tier: 2, type: gnews,
+     query: '真实世界证据 OR 真实世界数据', hl: zh-CN, gl: CN}
+  - {id: policy_eu, name: "EU policy (pharma package, EHDS, AI Act in health)", region: Europe, tier: 1, type: gnews,
+     query: '("pharmaceutical package" OR "European Health Data Space" OR EHDS OR "AI Act" medical) (Council OR Parliament OR Commission)'}
+  - {id: policy_us, name: "US policy (PDUFA, Cures, FDA)", region: Americas, tier: 1, type: gnews,
+     query: '(PDUFA OR "user fee" OR "Cures" OR Congress) FDA ("real-world" OR evidence OR guidance)'}
+
+  # ============================ PUBLICATIONS ============================
+  - {id: pubmed_reg, name: "PubMed — RWE × regulatory/HTA", region: Publications, tier: 1, type: pubmed, filter: none,
+     query: '("real-world evidence"[tiab] OR "real-world data"[tiab] OR "real world evidence"[tiab] OR "real world data"[tiab] OR "routinely collected"[tiab] OR "external control"[tiab] OR "synthetic control arm"[tiab]) AND (regulat*[tiab] OR "health technology assessment"[tiab] OR HTA[tiab] OR guidance[tiab] OR "marketing authori*"[tiab] OR approval*[tiab] OR FDA[tiab] OR EMA[tiab] OR payer*[tiab])'}
+  - {id: pubmed_methods, name: "PubMed — causal methods / TTE", region: Publications, tier: 1, type: pubmed, filter: none,
+     query: '("target trial emulation"[tiab] OR "emulated target trial"[tiab] OR "emulating a target trial"[tiab] OR transportability[tiab] OR "quantitative bias analysis"[tiab] OR "fit-for-purpose"[tiab] OR "data provenance"[tiab] OR "data quality framework"[tiab] OR (estimand*[tiab] AND observational[tiab]) OR "hybrid control"[tiab])'}
+  - {id: pubmed_ai_reg, name: "PubMed — AI × regulatory evaluation", region: Publications, tier: 2, type: pubmed, filter: none,
+     query: '("artificial intelligence"[tiab] OR "machine learning"[tiab] OR "large language model*"[tiab]) AND ("real-world data"[tiab] OR "real-world evidence"[tiab] OR "regulatory science"[tiab] OR pharmacovigilance[tiab]) AND (regulat*[tiab] OR validation[tiab] OR evaluation[tiab])'}
+  - {id: europepmc_preprints, name: "Europe PMC — preprints (medRxiv, SSRN, Research Square…)", region: Publications, tier: 2, type: europepmc,
+     query: 'SRC:PPR AND (ABSTRACT:"real-world evidence" OR ABSTRACT:"real-world data" OR ABSTRACT:"real world data" OR ABSTRACT:"target trial" OR ABSTRACT:"external control" OR ABSTRACT:"synthetic control arm" OR ABSTRACT:transportability OR ABSTRACT:"regulatory science" OR ABSTRACT:"health technology assessment")'}
+  - {id: europepmc_fulltext, name: "Europe PMC — full-text methods search", region: Publications, tier: 1, type: europepmc,
+     query: '("target trial emulation" OR "emulated target trial" OR "quantitative bias analysis" OR "fit-for-purpose" OR "external control arm" OR "hybrid control" OR "data provenance") AND (regulat* OR "health technology assessment" OR guidance OR framework) AND NOT SRC:PPR'}
+  - {id: arxiv_methods, name: "arXiv — statistical methodology (stat.ME / stat.AP)", region: Publications, tier: 2, type: arxiv,
+     query: '(cat:stat.ME OR cat:stat.AP) AND (abs:"target trial" OR abs:"real-world" OR abs:"real world data" OR abs:"external control" OR abs:transportability OR abs:estimand OR abs:"observational data" OR abs:"electronic health records")'}

@@ -1,0 +1,103 @@
+# General settings
+title: "RWE & Regulatory Science Watch"
+description: >-
+  Weekly watch on real-world evidence, regulatory science, HTA and evidence methodology
+  across regulators on four continents and the scientific literature.
+
+publisher:
+  name: "Ramzi Mraidi"       # shown in the AI notice as the person responsible for publication
+  contact: ""                 # optional, e.g. a LinkedIn URL or an email address
+
+window_days: 7                # window covered (Friday -> Thursday)
+timezone: "Europe/Paris"
+
+site:
+  enabled: true               # public archive + RSS on GitHub Pages
+  url: ""                     # leave empty: set automatically by the workflow
+
+llm:
+  enabled: true
+  # "gemini" = free (Google AI Studio key, secret GEMINI_API_KEY)
+  # "anthropic" = paid (secret ANTHROPIC_API_KEY)
+  # Without a key, the email contains a raw list with no analysis.
+  provider: "gemini"
+  gemini_triage_models:       # fast models for stage 1 (scoring), tried in order
+    - "gemini-3.5-flash-lite"
+    - "gemini-3.1-flash-lite"
+    - "gemini-2.5-flash-lite"
+    - "gemini-2.5-flash"
+  gemini_models:              # stronger models for stage 2 (writing), tried in order
+    - "gemini-3.8-flash"
+    - "gemini-3.6-flash"
+    - "gemini-2.5-pro"
+    - "gemini-2.5-flash"
+  anthropic_model: "claude-sonnet-5-5"
+  max_tokens: 32000           # includes the internal "thinking" of recent models
+  triage_max_tokens: 8000
+
+selection:
+  max_triage_items: 320       # max candidates scored in stage 1
+  triage_batch: 45            # items per scoring request
+  min_score: 6                # minimum score (0-10) to be analysed in stage 2
+  watch_min_score: 3          # lower bar for watchlist matches
+  max_items: 45               # max items analysed in stage 2
+  similarity: 0.6             # title similarity threshold for merging duplicates
+
+enrich:
+  max_pages: 45               # pages whose full text is fetched for stage 2
+  chars_per_page: 2500
+  decode_max: 40              # Google News links resolved to the publisher's URL
+
+health:
+  alert_after_runs: 2         # alert when a major source fails N runs in a row
+
+http:
+  timeout: 30
+  workers: 8
+
+state:
+  retention_days: 240         # how long already-seen links are remembered
+
+# Relevance filter for agency/press sources (publications use their own queries).
+# Multilingual to catch smaller agencies (pt, es, fr, de, it, zh, ja, ko, ar).
+keywords:
+  - 'real[- ]world'
+  - '\bRW[DE]\b'
+  - 'observational'
+  - 'non[- ]interventional'
+  - 'registr(y|ies|e|o)'
+  - 'target trial'
+  - 'external control'
+  - 'synthetic control'
+  - 'causal'
+  - 'pharmacoepidemiolog'
+  - 'post[- ]authori[sz]ation'
+  - '\bPASS\b|\bPAES\b'
+  - 'pharmacovigilance|safety stud'
+  - 'estimand'
+  - 'bayesian|adaptive design'
+  - 'pragmatic|decentrali[sz]ed'
+  - 'health data|data quality|data governance|interoperab|data space'
+  - 'fit[- ]for[- ]purpose'
+  - 'evidence'
+  - 'methodolog|statistic'
+  - 'artificial intelligence|\bAI\b|machine learning|algorithm'
+  - 'reflection paper|guideline|guidance|draft|consultation|concept paper|Q&A|questions and answers'
+  - 'health technology assessment|\bHTA\b|joint clinical assessment|\bJCA\b'
+  - 'EHDS|European Health Data Space|DARWIN'
+  - 'reliance|harmoni[sz]ation|ICH'
+  - 'mundo real|vida real|evidência|evidencia|dados de saúde|datos de salud'
+  - 'consulta pública|guía|guia\b|orientación|orientação|inteligência artificial|inteligencia artificial'
+  - 'vie réelle|données de santé|consultation publique|ligne directrice|recommandation'
+  - 'Versorgungsdaten|anwendungsbegleitende|Leitfaden|Nutzenbewertung|Methodenpapier'
+  - 'mondo reale|dati sanitari'
+  - '真实世界|指导原则|征求意见|人工智能'
+  - 'リアルワールド|ガイダンス|レジストリ|人工知能|医療情報|データベース'
+  - '실사용|리얼월드|가이드라인'
+  - 'العالم الحقيقي|إرشادات'
+
+exclude:
+  - 'Agency Information Collection'
+  - 'recall|rappel de lot|retiro de lote'
+  - 'tobacco|e-cigarette|vaping|dietary supplement'
+  - 'job vacanc|recrutement|vacancy|tender'
