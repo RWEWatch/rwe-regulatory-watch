@@ -2,9 +2,9 @@ name: RWE Regulatory Watch
 
 on:
   schedule:
-    # Every Friday 05:23 UTC = 06:23 Paris (winter) / 07:23 (summer).
+    # Every Wednesday 11:47 UTC = 12:47 Paris (winter) / 13:47 (summer).
     # GitHub may delay scheduled runs by a few minutes to ~1 hour.
-    - cron: "23 5 * * 5"
+    - cron: "47 11 * * 3"
   workflow_dispatch:
     inputs:
       mode:
@@ -16,6 +16,7 @@ on:
           - test    # full edition ignoring memory; no email, nothing saved or published
           - check   # test every source and show the coverage table
           - init    # memorise the current state of news pages (no AI, no email)
+          - rerun   # redo this week's edition ignoring memory for dated sources (email + save)
 
 permissions:
   contents: write
@@ -47,7 +48,7 @@ jobs:
         run: |
           MODE="${{ github.event.inputs.mode || 'run' }}"
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
-          if [ "$MODE" = "run" ] || [ "$MODE" = "init" ]; then echo "publish=true" >> "$GITHUB_OUTPUT"; else echo "publish=false" >> "$GITHUB_OUTPUT"; fi
+          if [ "$MODE" = "run" ] || [ "$MODE" = "init" ] || [ "$MODE" = "rerun" ]; then echo "publish=true" >> "$GITHUB_OUTPUT"; else echo "publish=false" >> "$GITHUB_OUTPUT"; fi
 
       - name: Run the watch
         env:
@@ -69,7 +70,8 @@ jobs:
             run)   python -m rwewatch ;;
             test)  python -m rwewatch --no-email --no-save --fresh ;;
             check) python -m rwewatch --check | tee -a "$GITHUB_STEP_SUMMARY" ;;
-            init)  python -m rwewatch --no-email --no-archive --no-ai ;;
+            init)  python -m rwewatch --init --no-email --no-archive --no-ai ;;
+            rerun) python -m rwewatch --fresh ;;
           esac
 
       - name: Keep the report (download from the run page)
