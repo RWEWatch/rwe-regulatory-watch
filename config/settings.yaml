@@ -40,7 +40,7 @@ llm:
 selection:
   max_triage_items: 320       # max candidates scored in stage 1
   triage_batch: 45            # items per scoring request
-  min_score: 6                # minimum score (0-10) to be analysed in stage 2
+  min_score: 7                # minimum score (0-10) to be analysed in stage 2
   watch_min_score: 3          # lower bar for watchlist matches
   max_items: 45               # max items analysed in stage 2
   similarity: 0.6             # title similarity threshold for merging duplicates

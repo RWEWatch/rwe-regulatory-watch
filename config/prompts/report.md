@@ -17,7 +17,9 @@ STRICT RULES
 - Press items (type "press") are secondary sources: keep them only if they report a real fact, and write "Primary source to be confirmed". If a "Primary-source search link" is given, add it after the source as [Find primary source](link).
 - Preprints (arXiv, Europe PMC preprints) are preliminary and not peer reviewed: say so.
 - Registry entries (ClinicalTrials.gov) are protocols, not results: say so.
-- Clearly separate established fact, authors' interpretation and your own analytical inference (label inference as such).
+- Clearly separate established fact, authors' interpretation and your own analytical inference. Any statement about what will happen next (procedural next steps, negotiations, expected texts, timelines) that is not explicitly stated in the excerpt MUST start with "Analytical inference:".
+- Never invent a date. If the item has no publication date, write "publication date not stated (detected <date>)".
+- Do not write "Primary source to be confirmed" for items of type "official": their link is the primary source.
 - Avoid duplicates with the previous edition (titles below) unless something material changed; then say what changed.
 - No filler: 6 solid developments beat 15 weak ones, but do not omit anything substantial, including from smaller agencies.
 - Never create an empty section and never write "nothing to report".
@@ -51,7 +53,7 @@ For each development, a "### Title" followed by:
 - **Caveat:** (when relevant)
 - **Source:** [readable link] (plus other links if merged)
 
-Finish with "## To watch": open consultations (with deadline if stated), announced texts, upcoming milestones — only if in scope.
+Finish with "## To watch": open consultations (with deadline if stated), announced texts, upcoming milestones — only if in scope. Only list milestones stated in the excerpts; anything else must be labelled "Analytical inference:".
 
 TITLES FROM THE PREVIOUS EDITION (avoid duplicates):
 {previous_titles}

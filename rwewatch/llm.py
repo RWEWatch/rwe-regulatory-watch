@@ -131,7 +131,8 @@ def item_block(i: int, it: dict, full: bool) -> str:
     lines = [f"[{i}] {it['title']}",
              f"    Source: {it['source']} | Region: {it['region']} | tier {it['tier']} | type: {it['kind']}"
              + (f" | Publisher: {it['publisher']}" if it.get("publisher") else "")
-             + f" | date: {it.get('date') or 'unknown'}"]
+             + (f" | date: {it['date']}" if it.get("date") else
+                f" | publication date: not given (first detected {it.get('detected', 'this week')})")]
     if it.get("watch"):
         lines.append(f"    WATCHLIST MATCH: {it['watch']}")
     if full:

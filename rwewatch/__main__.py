@@ -228,6 +228,14 @@ def main() -> int:
     if press and not args.no_ai:
         n = gnews.decode_items(press, settings["enrich"].get("decode_max", 40))
         log(f"Google News links decoded: {n}/{len(press)}")
+    for it in selected:
+        if not it.get("date"):
+            it["detected"] = today.isoformat()
+        # a press/fallback item whose link resolves to an official site IS the primary source
+        if it["kind"] == "press" and collectors.is_official(it["url"]):
+            it["kind"] = "official"
+            it.pop("primary_search", None)
+    press = [it for it in selected if it["kind"] == "press"]
     for it in press:
         dom = it.get("agency_domain")
         if dom:

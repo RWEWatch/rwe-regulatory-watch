@@ -139,9 +139,40 @@ def parse_feed(xml_bytes: bytes) -> list[dict]:
     return out
 
 
+def clean_link(url: str) -> str:
+    """Canonical display URL (the memory key is computed from the original URL)."""
+    m = re.search(r"uri=(CELEX:[0-9A-Z()]+)", url)
+    if "eur-lex.europa.eu" in url and m:
+        return f"https://eur-lex.europa.eu/legal-content/EN/TXT/?uri={m.group(1)}"
+    return url.replace("europa.eu/./", "europa.eu/")
+
+
+OFFICIAL_DOMAIN = re.compile(
+    r"(^|\.)("
+    r"[a-z0-9-]+\.gov|gov\.[a-z]{2}|[a-z0-9-]+\.gov\.[a-z]{2}|gouv\.fr|europa\.eu|canada\.ca|gc\.ca|"
+    r"who\.int|paho\.org|ich\.org|icmra\.info|cioms\.ch|imdrf\.org|oecd\.org|"
+    r"admin\.ch|go\.jp|go\.kr|gov\.cn|cde\.org\.cn|gob\.mx|gob\.es|gov\.br|"
+    r"nice\.org\.uk|has-sante\.fr|sante\.fr|iqwig\.de|g-ba\.de|bfarm\.de|pei\.de|aifa\.gov\.it|"
+    r"swissmedic\.ch|cbg-meb\.nl|zorginstituutnederland\.nl|cda-amc\.ca|sahpra\.org\.za|"
+    r"sfda\.gov\.sa|edaegypt\.gov\.eg|nafdac\.gov\.ng|darwin-eu\.org|hma\.eu|"
+    r"sentinelinitiative\.org|scottishmedicines\.org\.uk|ncpe\.ie|hpra\.ie|"
+    r"federalregister\.gov|clinicaltrials\.gov|nih\.gov"
+    r")$")
+
+
+def is_official(url: str) -> bool:
+    host = urllib.parse.urlsplit(url).netloc.lower().split(":")[0].removeprefix("www.")
+    return bool(OFFICIAL_DOMAIN.search(host))
+
+
 def collect_rss(src: dict, ctx: dict) -> list[dict]:
     r = http_get(src["url"], src.get("timeout", ctx["timeout"]))
-    return [make_item(src, e["title"], e["url"], e["date"], e["snippet"]) for e in parse_feed(r.content)]
+    items = []
+    for e in parse_feed(r.content):
+        it = make_item(src, e["title"], e["url"], e["date"], e["snippet"])
+        it["url"] = clean_link(it["url"])
+        items.append(it)
+    return items
 
 
 def collect_gnews(src: dict, ctx: dict) -> list[dict]:
@@ -417,5 +448,5 @@ def page_fingerprint(url: str, timeout: int = 30) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-__all__ = ["COLLECTORS", "make_item", "parse_feed", "parse_pubmed_xml", "fetch_text",
+__all__ = ["COLLECTORS", "make_item", "is_official", "clean_link", "parse_feed", "parse_pubmed_xml", "fetch_text",
            "gnews_fallback", "page_fingerprint", "http_get", "clean", "json"]
