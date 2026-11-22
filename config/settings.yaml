@@ -8,7 +8,7 @@ publisher:
   name: "Ramzi Mraidi"       # shown in the AI notice as the person responsible for publication
   contact: ""                 # optional, e.g. a LinkedIn URL or an email address
 
-window_days: 7                # window covered (Friday -> Thursday)
+window_days: 7                # window covered: the 7 days before the run day
 timezone: "Europe/Paris"
 
 site:
@@ -34,6 +34,8 @@ llm:
   anthropic_model: "claude-sonnet-5-5"
   max_tokens: 32000           # includes the internal "thinking" of recent models
   triage_max_tokens: 8000
+  report_retry_passes: 1      # if all models fail when writing, wait and try the whole chain again
+  report_retry_wait: 240      # seconds to wait before that second attempt
 
 selection:
   max_triage_items: 320       # max candidates scored in stage 1

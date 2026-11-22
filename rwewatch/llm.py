@@ -48,12 +48,24 @@ def gemini(prompt: str, api_key: str, models: list[str], max_tokens: int,
                     return text, model
                 errors.append(f"{model}: empty response ({cand.get('finishReason') or data.get('promptFeedback')})")
                 break
-            errors.append(f"{model}: HTTP {r.status_code} {r.text[:120]}")
-            if r.status_code in (429, 500, 503) and attempt < 2:
-                time.sleep(45 * (attempt + 1))  # per-minute quota: wait and retry
+            errors.append(f"{model}: HTTP {r.status_code}")
+            if r.status_code in (429, 500, 503) and attempt < 1:
+                time.sleep(60)  # overloaded or per-minute quota: wait once, then next model
                 continue
             break  # 400/403/404: model unavailable -> next model
-    raise LLMError("Gemini unavailable — " + " | ".join(errors[-4:]))
+    raise LLMError("Gemini unavailable — " + ", ".join(errors[-6:]))
+
+
+def friendly(err: Exception) -> str:
+    """Short, readable reason for the report (no raw API payloads)."""
+    msg = str(err)
+    if "503" in msg:
+        return "Google's AI servers were overloaded, HTTP 503"
+    if "429" in msg:
+        return "the free AI quota was temporarily exhausted, HTTP 429"
+    if "404" in msg or "400" in msg:
+        return "the configured AI models were not available"
+    return "the AI service did not respond"
 
 
 def anthropic(prompt: str, api_key: str, model: str, max_tokens: int) -> tuple[str, str]:
@@ -85,10 +97,25 @@ class Engine:
 
     def run(self, prompt: str, stage: str, json_mode: bool = False) -> str:
         if self.provider == "gemini":
-            models = self.cfg["gemini_triage_models"] if stage == "triage" else self.cfg["gemini_models"]
-            max_tok = self.cfg["triage_max_tokens"] if stage == "triage" else self.cfg["max_tokens"]
-            text, model = gemini(prompt, self.key, models, max_tok, json_mode=json_mode,
-                                 temperature=0.1 if stage == "triage" else 0.3)
+            if stage == "triage":
+                models, max_tok = self.cfg["gemini_triage_models"], self.cfg["triage_max_tokens"]
+            else:
+                # writing: strong models first, then the fast ones as a last resort
+                models = list(dict.fromkeys(self.cfg["gemini_models"] + self.cfg["gemini_triage_models"]))
+                max_tok = self.cfg["max_tokens"]
+            passes = 1 if stage == "triage" else 1 + int(self.cfg.get("report_retry_passes", 1))
+            last: Exception | None = None
+            for p in range(passes):
+                try:
+                    text, model = gemini(prompt, self.key, models, max_tok, json_mode=json_mode,
+                                         temperature=0.1 if stage == "triage" else 0.3)
+                    break
+                except LLMError as e:
+                    last = e
+                    if p < passes - 1:
+                        time.sleep(int(self.cfg.get("report_retry_wait", 240)))
+            else:
+                raise last  # type: ignore[misc]
         else:
             text, model = anthropic(prompt, self.key, self.cfg["anthropic_model"],
                                     min(self.cfg["max_tokens"], 16000))

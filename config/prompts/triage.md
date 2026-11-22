@@ -10,6 +10,8 @@ Score each item from 0 to 10 for how much it matters to that reader:
 
 Rules:
 - Judge on substance, not on keywords. A routine clinical cohort study using claims data is 3-4, not 7.
+- An applied study that merely USES target trial emulation or other causal methods to answer a clinical question (e.g. "drug X vs Y: a target trial emulation") is 4-5, unless it brings a methodological lesson, a regulatory use, or a decision-relevant evidence-generation insight.
+- Out-of-scope regulatory news (e.g. chemicals/environment, peptides manufacturing, cosmetics, enforcement) is 0-3 even when issued by a regulator.
 - Press items (type "press") describing a real regulatory fact can score high; mere commentary scores low.
 - Items with "WATCHLIST MATCH" deserve attention but still score on substance.
 - Excerpts may be in any language.

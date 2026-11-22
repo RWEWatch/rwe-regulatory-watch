@@ -104,6 +104,36 @@ def coverage(statuses: list[dict], full: bool, site_url: str | None = None,
     return "\n".join(lines)
 
 
+TOPIC_TITLES = {"guidance": "Guidance & regulatory frameworks", "decision": "Regulatory & HTA decisions",
+                "methods": "Methodology & scientific publications", "policy": "Policy & legislation",
+                "data": "Data, infrastructure & governance", "global": "Global outlook", "other": "Other"}
+
+
+def scored_digest(items: list[dict], reason: str) -> str:
+    """Degraded mode when only the writing step failed: items ranked by AI triage score,
+    grouped by topic, each with the one-line triage reason."""
+    out = [f"> ⚠️ The AI writing step was unavailable this run ({reason}). Below are the items "
+           "selected by the AI triage, ranked by relevance score (0–10) with a one-line reason. "
+           "No summaries or analyses this time."]
+    groups = defaultdict(list)
+    for it in items:
+        groups[it.get("topic") or "other"].append(it)
+    for key in ["guidance", "decision", "policy", "methods", "data", "global", "other"]:
+        group = sorted(groups.get(key, []), key=lambda x: -x.get("score", 0))
+        if not group:
+            continue
+        out.append(f"\n## {TOPIC_TITLES[key]}")
+        for it in group:
+            tag = {"press": " · press (secondary source)", "preprint": " · preprint",
+                   "registry": " · registry entry"}.get(it["kind"], "")
+            pub = f" — {it['publisher']}" if it.get("publisher") else ""
+            date = f", {it['date']}" if it.get("date") else ""
+            why = f" — *{it['triage_reason']}*" if it.get("triage_reason") else ""
+            out.append(f"- **[{it['title']}]({it['url']})**{pub} ({it['source']}{date}{tag}) "
+                       f"· score {it.get('score', 0):g}{why}")
+    return "\n".join(out)
+
+
 def raw_digest(items: list[dict]) -> str:
     if not items:
         return "No new items passed the filters this week."

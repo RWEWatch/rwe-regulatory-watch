@@ -266,8 +266,7 @@ def main() -> int:
             body = engine.run(tpl, "report")
         except Exception as e:  # noqa: BLE001
             log(f"Report writing failed: {e}")
-            body = f"> Automatic analysis unavailable this week ({str(e)[:200]}). Raw list below.\n\n" \
-                   + report.raw_digest(selected)
+            body = report.scored_digest(selected, llm.friendly(e))
     if body is None:
         body = report.raw_digest(selected)
 
