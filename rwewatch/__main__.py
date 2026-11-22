@@ -66,6 +66,8 @@ def main() -> int:
     ap.add_argument("--no-save", action="store_true", help="do not update memory, health or archives")
     ap.add_argument("--no-archive", action="store_true", help="update memory without archiving")
     ap.add_argument("--no-ai", action="store_true", help="skip AI stages (used for initialisation)")
+    ap.add_argument("--init", action="store_true",
+                    help="initialisation: memorise news pages only (dated sources stay unseen)")
     ap.add_argument("--fresh", action="store_true", help="ignore memory for dated sources (test edition)")
     ap.add_argument("--no-site", action="store_true")
     ap.add_argument("--days", type=int)
@@ -169,7 +171,9 @@ def main() -> int:
             seen_keys.add(it["key"])
             new.append(it)
 
-        if save:
+        # In --init mode only news pages are memorised: dated sources (publications, feeds,
+        # press) must stay "unseen" so that the first real edition still contains them.
+        if save and (not args.init or eff_type == "page"):
             store.add(store_id, [it["key"] for it in uniq], today)
         st["new"] = len(new)
         st["status"] = "fallback" if fell_back else ("initialised" if bootstrap else "ok")
