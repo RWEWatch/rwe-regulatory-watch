@@ -112,8 +112,6 @@ sources:
      query: '(ANMAT OR INVIMA OR "ISP Chile" OR DIGEMID OR "evidencia del mundo real") (medicamentos OR regulación)', hl: es-419, gl: AR}
   - {id: paho, name: "PAHO", region: Americas, tier: 2, type: gnews,
      query: 'PAHO (regulatory OR "health data" OR "health technology assessment")'}
-  - {id: icer, name: "ICER", region: Americas, tier: 2, type: gnews,
-     query: '"Institute for Clinical and Economic Review"'}
   - {id: us_rwe_ecosys, name: "US RWE ecosystem (Duke-Margolis, Reagan-Udall, PCORI)", region: Americas, tier: 2, type: gnews,
      query: '("Duke-Margolis" OR "Reagan-Udall" OR PCORI) ("real-world" OR evidence)'}
 
@@ -172,7 +170,7 @@ sources:
   - {id: ctgov, name: "ClinicalTrials.gov — registry-based / RWE-design studies", region: Publications, tier: 2, type: clinicaltrials,
      query: '"registry-based" OR "registry based randomized" OR "target trial emulation" OR "external control arm" OR "synthetic control arm" OR "real-world evidence" OR "real world evidence"'}
   - {id: smc, name: "Scottish Medicines Consortium", region: Europe, tier: 2, type: page,
-     url: "https://www.scottishmedicines.org.uk/about-us/latest-updates/", include: "scottishmedicines\\.org\\.uk/"}
+     url: "https://scottishmedicines.org.uk/about-us/latest-update/", include: "scottishmedicines\\.org\\.uk/about-us/latest-update/."}
   - {id: ncpe, name: "NCPE (Ireland)", region: Europe, tier: 2, type: page,
      url: "https://www.ncpe.ie/", include: "ncpe\\.ie/"}
   - {id: inahta_htai, name: "INAHTA / HTAi (press)", region: International, tier: 2, type: gnews,
@@ -193,9 +191,8 @@ sources:
      url: "https://www.mhlw.go.jp/stf/new-info/index.html", include: "mhlw\\.go\\.jp/"}
   - {id: mfds_en, name: "MFDS (Korea, English site)", region: Asia-Pacific, tier: 1, type: page,
      url: "https://www.mfds.go.kr/eng/brd/m_61/list.do", include: "mfds\\.go\\.kr/eng/"}
-  - {id: who_iris, name: "WHO IRIS — new publications", region: International, tier: 2, type: page,
-     url: "https://iris.who.int/discover?scope=%2F&query=&rpp=40&sort_by=dc.date.issued_dt&order=desc",
-     include: "iris\\.who\\.int/(handle|items|bitstream)"}
+  - {id: who_pubs, name: "WHO — new guidance & reports (press)", region: International, tier: 2, type: gnews,
+     query: '"World Health Organization" (guidance OR framework OR report OR guideline) ("health data" OR "real-world" OR regulatory OR "artificial intelligence" OR "health technology assessment" OR evidence)'}
   - {id: cioms_pubs, name: "CIOMS — publications", region: International, tier: 1, type: page,
      url: "https://cioms.ch/publications/", include: "cioms\\.ch/publications/", filter: none}
 
