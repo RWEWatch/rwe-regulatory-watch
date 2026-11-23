@@ -289,14 +289,20 @@ def main() -> int:
     notice = report.disclosure(settings, engine.used_models, (ok_links, removed), site_url,
                                settings["llm"].get("provider", "gemini"))
     label = report.ai_label(settings)
-    full_md = (f"# {title}\n\n*{meta}*\n\n{label}\n\n{body.strip()}\n\n"
-               f"{report.coverage(statuses, full=True, alerts=alerts)}\n\n{notice}\n")
-    email_md = (f"{label}\n\n{body.strip()}\n\n"
-                f"{report.coverage(statuses, full=False, site_url=site_url, alerts=alerts)}\n\n{notice}\n")
+    coverage_md = report.coverage(statuses, full=True, alerts=alerts)
+    cov_block = f"{coverage_md}\n\n" if settings.get("report", {}).get("include_coverage", False) else ""
+    full_md = f"# {title}\n\n*{meta}*\n\n{label}\n\n{body.strip()}\n\n{cov_block}{notice}\n"
+    email_md = f"{label}\n\n{body.strip()}\n\n{cov_block}{notice}\n"
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+            f.write(f"{coverage_md}\n")
+    if alerts:
+        log("SOURCE HEALTH ALERT: " + "; ".join(alerts))
 
     out = ROOT / "out"
     out.mkdir(exist_ok=True)
     (out / "watch.md").write_text(full_md, "utf-8")
+    (out / "coverage.md").write_text(coverage_md, "utf-8")
     html = report.to_html(title, email_md, meta)
     (out / "watch.html").write_text(html, "utf-8")
 

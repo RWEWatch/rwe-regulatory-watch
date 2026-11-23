@@ -1,6 +1,6 @@
 # RWE & Regulatory Science Watch
 
-An automated **weekly watch on real-world evidence (RWE), regulatory science, HTA and evidence methodology**, delivered every Friday morning by email and published as a public archive with an RSS feed.
+An automated **weekly watch on real-world evidence (RWE), regulatory science, HTA and evidence methodology**, delivered every Wednesday around 13:00 (Paris) by email and published as a public archive with an RSS feed.
 
 > **AI-generated content.** Each edition is produced by an AI system (Google Gemini, free API tier) from public sources, without human editorial review before publication, and is labelled as such in line with Article 50(4) of the EU AI Act. Always verify items against their linked sources.
 
@@ -23,7 +23,7 @@ An automated **weekly watch on real-world evidence (RWE), regulatory science, HT
 ## How it works
 
 ```
-GitHub Actions — every Friday ~06:30 Paris
+GitHub Actions — every Wednesday ~13:00 Paris
  1. Collect      ~90 sources in parallel (feeds, news pages, APIs)
                  · blocked sites fall back automatically to Google News for their domain
  2. Keep new     memory of links already seen (data/seen.json) + 7-day window
@@ -36,7 +36,7 @@ GitHub Actions — every Friday ~06:30 Paris
  9. Publish      email (compact) · archive (full) · public site + RSS (GitHub Pages)
 ```
 
-Each edition contains: **Key takeaways · Tracked items · thematic sections · To watch · Coverage · About this report (AI notice)**.
+Each edition contains: **Key takeaways · Tracked items · thematic sections · To watch · About this report (AI notice)**. The source coverage table is shown on each GitHub Actions run page (Summary) and kept out of the shared report (set `report.include_coverage: true` to include it).
 
 ---
 
@@ -69,6 +69,7 @@ Go to **Settings → Secrets and variables → Actions → New repository secret
 | `SMTP_USER` | the Gmail address |
 | `SMTP_PASSWORD` | the 16-letter app password, no spaces |
 | `MAIL_TO` | recipient address(es), comma-separated |
+| `MAIL_FROM` | *(optional)* sender shown in emails, e.g. `RWE Regulatory Watch <your.address@gmail.com>` |
 | `NCBI_API_KEY` | *(optional)* free NCBI key for more reliable PubMed access |
 
 Secrets are never visible publicly, even in a public repository.
@@ -86,6 +87,7 @@ Go to **Actions → RWE Regulatory Watch → Run workflow** and run these modes 
 | `init` | memorises the current state of news pages (no AI, no email) |
 | `test` | builds a full edition without email or saving; download it under **Artifacts** at the bottom of the run page |
 | `run` | the real thing: email + archive + public site |
+| `rerun` | *(if needed)* redo this week's edition ignoring memory for publications/feeds — email + archive + site |
 
 The public site is then available at `https://<your-github-username>.github.io/<repository-name>/`.
 
@@ -95,7 +97,7 @@ The public site is then available at `https://<your-github-username>.github.io/<
 
 | File | Purpose |
 |---|---|
-| `config/settings.yaml` | title, publisher name, AI models, selection thresholds, keywords, exclusions |
+| `config/settings.yaml` | title, publication name, coverage table on/off, AI models, selection thresholds, keywords, exclusions |
 | `config/sources.yaml` | agencies, HTA bodies, press queries, PubMed / Europe PMC / arXiv / ClinicalTrials.gov queries |
 | `config/journals.yaml` | journals followed through Crossref (by ISSN) and their relevance filters |
 | `config/watchlist.yaml` | dossiers to track (regex) and pages to monitor for changes |
@@ -128,4 +130,4 @@ python -m rwewatch --check --only ema,nmpa         # test a few sources
 - **Software**: source-available, **no-derivatives** licence. You may view, download, run and share unmodified copies; you may not distribute modified versions. See [LICENSE.md](LICENSE.md).
 - **Reports**: [CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/). Share freely, unmodified, with attribution.
 
-© 2026 Ramzi Mraidi
+© 2026 RWE Regulatory Watch

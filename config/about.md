@@ -2,7 +2,7 @@
 
 A weekly watch on **real-world evidence (RWE), regulatory science, health technology assessment and evidence methodology**. It monitors regulators and HTA bodies on four continents, international bodies (ICH, WHO, CIOMS, ICMRA, IMDRF), EU law (EUR-Lex), the US Federal Register, trial registries (ClinicalTrials.gov, HMA-EMA RWD catalogues) and the scientific literature (PubMed, Europe PMC, Crossref online-first articles of key journals, arXiv).
 
-Published by **{publisher}**.
+Published by **{publisher}**, an automated publication.
 
 ## AI-generated content — transparency notice
 

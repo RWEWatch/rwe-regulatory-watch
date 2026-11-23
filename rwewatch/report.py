@@ -27,7 +27,7 @@ def ai_label(settings: dict) -> str:
 def disclosure(settings: dict, models: set[str], link_stats: tuple[int, int], site_url: str | None,
                provider: str = "gemini") -> str:
     pub = settings.get("publisher", {})
-    name = pub.get("name") or "the publisher"
+    name = pub.get("name") or "RWE Regulatory Watch"
     contact = f" Contact: {pub['contact']}." if pub.get("contact") else ""
     model_txt = ", ".join(sorted(models)) if models else "none (raw list, no AI analysis this week)"
     ok, removed = link_stats
@@ -56,9 +56,9 @@ def disclosure(settings: dict, models: set[str], link_stats: tuple[int, int], si
         f"was checked against the collected sources ({ok} verified, {removed} removed).",
         "- **Not advice:** this report is for information only and is not legal, regulatory, medical "
         "or investment advice.",
-        f"- **Responsibility:** published by {name}.{contact}",
+        f"- **Publisher:** {name} (automated publication).{contact}",
         "- **Licence:** this report may be shared and downloaded unmodified, with attribution, under "
-        "[CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/)."
+        f"[CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/), attribution: {name}."
         + (f" The tool's source code: {repo} (no-derivatives licence)." if repo else ""),
     ]
     if site_url:

@@ -1,6 +1,6 @@
 # Licences
 
-Copyright © 2026 Ramzi Mraidi. All rights reserved except as expressly granted below.
+Copyright © 2026 RWE Regulatory Watch. All rights reserved except as expressly granted below.
 
 ## 1. Software — "RWE Regulatory Watch No-Derivatives Licence 1.0"
 
@@ -10,7 +10,7 @@ This licence applies to the source code, configuration files, prompts and docume
 
 1. view, download and keep copies of the Software;
 2. run the Software, unmodified, for any purpose, supplying their own credentials through environment variables or repository secrets;
-3. redistribute **verbatim, unmodified** copies of the Software, provided this LICENSE file and all copyright notices are kept intact, and attribution is given to "Ramzi Mraidi — RWE Regulatory Watch" with a link to the original repository.
+3. redistribute **verbatim, unmodified** copies of the Software, provided this LICENSE file and all copyright notices are kept intact, and attribution is given to "RWE Regulatory Watch" with a link to the original repository.
 
 **Restrictions.** Without prior written permission from the copyright holder, you may not:
 
