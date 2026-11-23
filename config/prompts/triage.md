@@ -26,7 +26,7 @@ Rules:
 For each item also give:
 - "topic": one of "guidance", "decision", "methods", "policy", "data", "global", "other";
 - "reason": at most 15 words, in English;
-- "agency_domain": for press items only, the web domain of the agency or institution whose primary document the item refers to (e.g. "fda.gov", "ema.europa.eu", "mhra.gov.uk"), or "" if unclear.
+- "agency_domain": for press items only, the web domain of the institution that actually issued the decision or document the item reports (e.g. "fda.gov", "ema.europa.eu", "mhra.gov.uk", "ich.org", "info.gov.hk"). It is NOT the domain of the monitoring channel shown in "Source" (e.g. an item listed under "CDE (China, press)" about Hong Kong joining ICH → "ich.org"). Use "" if unclear.
 
 Return ONLY a JSON array, one object per item, using the item number as "id":
 [{"id": 1, "score": 7, "topic": "methods", "reason": "...", "agency_domain": ""}, ...]

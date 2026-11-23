@@ -322,7 +322,11 @@ def collect_europepmc(src: dict, ctx: dict) -> list[dict]:
         for p in data.get("resultList", {}).get("result", []):
             doi = p.get("doi")
             src_code, pid = p.get("source", ""), p.get("id", "")
-            url = f"https://doi.org/{doi}" if doi else f"https://europepmc.org/article/{src_code}/{pid}"
+            # preprint DOIs are sometimes not yet registered at doi.org: use the Europe PMC page
+            if src_code == "PPR" or not doi:
+                url = f"https://europepmc.org/article/{src_code}/{pid}"
+            else:
+                url = f"https://doi.org/{doi}"
             journal = (p.get("journalInfo") or {}).get("journal", {}).get("title") \
                 or (p.get("bookOrReportDetails") or {}).get("publisher") or ""
             is_preprint = src_code == "PPR"
@@ -438,6 +442,27 @@ def fetch_text(url: str, limit: int, timeout: int = 25) -> str:
         tag.decompose()
     main = soup.find("main") or soup.find("article") or soup.body or soup
     return clean(main.get_text(" "), limit)
+
+
+def fetch_with_links(url: str, limit: int, timeout: int = 25) -> tuple[str, list[str]]:
+    """Main text of a page + links it contains to official sites (agencies, EU, gov...).
+    Used on press articles to recover the primary source they cite."""
+    if re.search(r"\.(pdf|xlsx?|docx?|zip)(\?|$)", url, re.I) or "news.google.com" in url:
+        return "", []
+    r = http_get(url, timeout)
+    if "html" not in r.headers.get("Content-Type", "html"):
+        return "", []
+    soup = BeautifulSoup(r.text, "html.parser")
+    for tag in soup(["script", "style", "nav", "header", "footer", "aside", "form", "noscript"]):
+        tag.decompose()
+    main = soup.find("main") or soup.find("article") or soup.body or soup
+    links = []
+    for a in main.find_all("a", href=True):
+        href = urllib.parse.urljoin(r.url, a["href"]).split("#")[0]
+        if href.startswith("http") and is_official(href) and href not in links \
+                and urllib.parse.urlsplit(href).path not in ("", "/"):
+            links.append(href)
+    return clean(main.get_text(" "), limit), links[:4]
 
 
 def page_fingerprint(url: str, timeout: int = 30) -> str:

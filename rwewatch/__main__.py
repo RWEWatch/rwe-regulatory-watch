@@ -247,7 +247,12 @@ def main() -> int:
 
     def enrich(it):
         try:
-            txt = collectors.fetch_text(it["url"], settings["enrich"]["chars_per_page"])
+            if it["kind"] == "press":
+                txt, links = collectors.fetch_with_links(it["url"], settings["enrich"]["chars_per_page"])
+                if links:
+                    it["primary_links"] = links
+            else:
+                txt = collectors.fetch_text(it["url"], settings["enrich"]["chars_per_page"])
             if len(txt) > len(it.get("snippet", "")):
                 it["text"] = txt
         except Exception:  # noqa: BLE001
@@ -278,6 +283,17 @@ def main() -> int:
     if body is None:
         body = report.raw_digest(selected)
 
+    # tidy the model's output: duplicated labels, LaTeX maths, stray "Established fact:" prefixes
+    body = re.sub(r"(Analytical inference:\s*){2,}", "Analytical inference: ", body)
+    body = re.sub(r"\*\*Analytical inference:\*\*\s*Analytical inference:", "**Analytical inference:**", body)
+    for a, b in [(r"\geq", "≥"), (r"\ge", "≥"), (r"\leq", "≤"), (r"\le", "≤"),
+                 (r"\times", "×"), (r"\%", "%"), (r"\pm", "±"), ("{,}", ",")]:
+        body = body.replace(a, b)
+    body = re.sub(r"\$([^$\n]{1,40})\$",
+                  lambda m: m.group(1).strip()
+                  if re.search(r"[≥≤×±^_\\{}=<>]", m.group(1)) or re.fullmatch(r"\s*[\d.,]+\s*", m.group(1))
+                  else m.group(0), body)
+    body = re.sub(r"(\*\*Summary:\*\*\s*)Established fact:\s*", r"\1", body)
     # remove any "Editorial opportunities" section the model might add anyway
     body = re.sub(r"\n#+\s*Editorial opportunities.*?(?=\n## |\Z)", "\n", body, flags=re.S | re.I)
     body, ok_links, removed = verify.check_links(body, verify.allowed_urls(selected))

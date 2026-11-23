@@ -139,7 +139,9 @@ def item_block(i: int, it: dict, full: bool) -> str:
         lines.append(f"    Link: {it['url']}")
         for a in it.get("also", [])[:4]:
             lines.append(f"    Also reported by: {a.get('publisher') or a['source']} — {a['url']}")
-        if it.get("primary_search"):
+        for u in it.get("primary_links", []):
+            lines.append(f"    Official link cited in the article (primary source): {u}")
+        if it.get("primary_search") and not it.get("primary_links"):
             lines.append(f"    Primary-source search link: {it['primary_search']}")
         if it.get("triage_reason"):
             lines.append(f"    Triage: score {it.get('score')} — {it['triage_reason']}")

@@ -18,6 +18,8 @@ def allowed_urls(items: list[dict]) -> set[str]:
                 urls.add(norm_url(u))
         for a in it.get("also", []):
             urls.add(norm_url(a["url"]))
+        for u in it.get("primary_links", []):
+            urls.add(norm_url(u))
     return urls
 
 

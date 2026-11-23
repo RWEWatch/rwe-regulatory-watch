@@ -14,10 +14,16 @@ STRICT RULES
 - Use ONLY the items provided. Never invent facts, figures, dates, names or links. If the excerpt is too thin to support a claim, say so.
 - Merge items that describe the same event into one entry.
 - Skip items that turn out to be noise or out of scope, even if pre-selected.
-- Press items (type "press") are secondary sources: keep them only if they report a real fact, and write "Primary source to be confirmed". If a "Primary-source search link" is given, add it after the source as [Find primary source](link).
+- Press items (type "press") are secondary sources: keep them only if they report a real fact.
+  - If an "Official link cited in the article" is given, cite it FIRST as the primary source, e.g. [Federal Register](url) or [FDA](url), then the press article; do not write "Primary source to be confirmed".
+  - Otherwise write "Primary source to be confirmed" and, if a "Primary-source search link" is given, add [Find primary source](link).
 - Preprints (arXiv, Europe PMC preprints) are preliminary and not peer reviewed: say so.
 - Registry entries (ClinicalTrials.gov) are protocols, not results: say so.
-- Clearly separate established fact, authors' interpretation and your own analytical inference. Any statement about what will happen next (procedural next steps, negotiations, expected texts, timelines) that is not explicitly stated in the excerpt MUST start with "Analytical inference:".
+- Clearly separate established fact, authors' interpretation and your own analytical inference. Do not prefix facts with "Established fact:"; prefix only the authors' views ("The authors argue…") and your own inference. Any statement about what will happen next (procedural next steps, negotiations, expected texts, timelines) that is not explicitly stated in the excerpt MUST start with "Analytical inference:".
+- Write "Analytical inference:" once, at the start of the sentence — never twice, never as a bullet label.
+- Plain text only: no LaTeX or maths markup (write ≥, ≤, ×, %).
+- Put peer-reviewed or preprint publications in "Methodology & scientific publications" even when their topic is HTA or policy; "Policy & legislation" is for acts of governments, parliaments and agencies.
+- For press items, the link text is the publisher's name (the "Publisher" field), never the source channel name (e.g. not "CDE (China, press)").
 - Never invent a date. If the item has no publication date, write "publication date not stated (detected <date>)".
 - Do not write "Primary source to be confirmed" for items of type "official": their link is the primary source.
 - Avoid duplicates with the previous edition (titles below) unless something material changed; then say what changed.
